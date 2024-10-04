@@ -4,6 +4,10 @@
 #include <vector>
 #include <windows.h>
 
+std::vector<float> temperature;
+std::vector<float> spo2;
+std::vector<float> pulseRate;
+
 std::string ReadConsoleOutput(const std::string& command)
 {
     std::string output;
@@ -53,42 +57,34 @@ std::string ReadConsoleOutput(const std::string& command)
     return output;
 }
 
-void ProcessVitals(int temperature, int spo2Value, int pulseRate)
+void getMaxMinValue(const std::vector<float> & vitals,float *maxValue, float *minValue)
 {
-    std::vector<int> temperatures;
-    std::vector<int> spo2;
-    std::vector<int> pulseRates;
-    temperatures.push_back(temperature);
+    *maxValue = *std::max_element(vitals.begin(), vitals.end());
+    *minValue = *std::min_element(vitals.begin(), vitals.end());
+}
+
+void DisplayMaxMinVitals(std::string vitalName , const std::vector<float> & vitals)
+{
+    float maxValue ;
+    float minValue ;
+    getMaxMinValue(vitals,&maxValue,&minValue);
+    std::cout << vitalName <<" :" << std::endl;
+    std::cout << "  Max: " << maxValue << std::endl;
+    std::cout << "  Min: " << minValue << std::endl;
+}
+
+void ProcessVitals(float temperatureValue, float spo2Value, float pulseRateValue)
+{
+    temperature.push_back(temperatureValue);
     spo2.push_back(spo2Value);
-    pulseRates.push_back(pulseRate);
-
-    // Calculate max, min
-    int maxTemperature = *std::max_element(temperatures.begin(), temperatures.end());
-    int minTemperature = *std::min_element(temperatures.begin(), temperatures.end());
-
-    int maxSpo2 = *std::max_element(spo2.begin(), spo2.end());
-    int minSpo2 = *std::min_element(spo2.begin(), spo2.end());
-
-    int maxPulseRate = *std::max_element(pulseRates.begin(), pulseRates.end());
-    int minPulseRate = *std::min_element(pulseRates.begin(), pulseRates.end());
-
-    // Output the results
-    std::cout << "Temperature (�C):" << std::endl;
-    std::cout << "  Max: " << maxTemperature << std::endl;
-    std::cout << "  Min: " << minTemperature << std::endl;
-
-    std::cout << "SPO2 (%):" << std::endl;
-    std::cout << "  Max: " << maxSpo2 << std::endl;
-    std::cout << "  Min: " << minSpo2 << std::endl;
-
-    std::cout << "Pulse Rate (bpm):" << std::endl;
-    std::cout << "  Max: " << maxPulseRate << std::endl;
-    std::cout << "  Min: " << minPulseRate << std::endl;
-
+    pulseRate.push_back(pulseRateValue);
+    
+    DisplayMaxMinVitals("Temperature",temperature);
+    DisplayMaxMinVitals("SPO2",spo2);
+    DisplayMaxMinVitals("PulseRate",pulseRate);
 
     //TODO simple moving average of last 5 values 
 }
-
 
 int main()
 {
@@ -105,10 +101,9 @@ int main()
     // Read the incoming data 
     while (std::getline(iss, line)) {
         std::istringstream lineStream(line);
-        int temperature, spo2Value, pulseRate;
-        lineStream >> temperature >> spo2Value >> pulseRate;
-		ProcessVitals(temperature, spo2Value, pulseRate);
-    
+        float temperatureValue, spo2Value, pulseRateValue;
+        lineStream >> temperatureValue >> spo2Value >> pulseRateValue;
+		ProcessVitals(temperatureValue, spo2Value, pulseRateValue);
     }
 
     return 0;
