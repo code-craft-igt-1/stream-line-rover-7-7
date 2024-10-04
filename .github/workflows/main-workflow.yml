@@ -21,10 +21,10 @@ jobs:
         cmake -S . -B build
         cmake --build build
 
-    - name: run
+    - name: sender
       run: build/sender
       
-    - name: test
+    - name: processor
       run: build/processor
 
     - name: collect coverage
