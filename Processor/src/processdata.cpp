@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <Windows.h>
+#include <windows.h>
 
 std::string ReadConsoleOutput(const std::string& command)
 {
@@ -73,7 +73,7 @@ void ProcessVitals(int temperature, int spo2Value, int pulseRate)
     int minPulseRate = *std::min_element(pulseRates.begin(), pulseRates.end());
 
     // Output the results
-    std::cout << "Temperature (°C):" << std::endl;
+    std::cout << "Temperature (ï¿½C):" << std::endl;
     std::cout << "  Max: " << maxTemperature << std::endl;
     std::cout << "  Min: " << minTemperature << std::endl;
 
